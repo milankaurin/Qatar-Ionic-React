@@ -1,0 +1,7 @@
+{
+  "name": "milantupan",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
