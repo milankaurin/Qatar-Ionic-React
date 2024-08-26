@@ -3,6 +3,8 @@ import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent,IonText,IonButton 
 import { useHistory } from 'react-router-dom';
 import TimService from '../Api/TimService';
 import GrupaKomponenta from './GrupaKomponenta';
+import axios from 'axios';
+
 
 const MainPage: React.FC = () => {
   const [selectedGroupId, setSelectedGroupId] = React.useState<number | null>(null);
@@ -17,17 +19,55 @@ const MainPage: React.FC = () => {
       console.log(token);
   }, [sessionStorage.getItem("token")]);
 
+  useEffect(() => {
+    const token = sessionStorage.getItem('token');
+    setIsAuthenticated(!!token);
+    console.log(isAuthenticated);
+    console.log(token);
+});
+
+
+  useEffect(() => {
+    const token = sessionStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+      // Set the Authorization header on page load or when the token changes
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+      setIsAuthenticated(false);
+    }
+  }, []);
+
+
   if (!isAuthenticated) {
-      return (
-          <IonPage>
-              <IonContent className="ion-padding">
-                  <IonText>You are not logged in. Please</IonText>
-                  <IonButton onClick={() => history.push('/login')}>log in</IonButton>
-                               
-                                </IonContent>
-          </IonPage>
-      );
+    return (
+      <IonPage>
+        <IonContent className="ion-padding" fullscreen>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '100%',
+            textAlign: 'center'
+          }}>
+            <IonText color="medium" style={{ marginBottom: '20px' }}>
+              You are not logged in. Please log in or register to continue.
+            </IonText>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <IonButton expand="block" color="secondary" onClick={() => history.push('/login')}>
+                Log In
+              </IonButton>
+              <IonButton expand="block" color="secondary" onClick={() => history.push('/register')}>
+                Register
+              </IonButton>
+            </div>
+          </div>
+        </IonContent>
+      </IonPage>
+    );
   }
+
 
 
   const handleGroupSelect = async (groupId: number) => {

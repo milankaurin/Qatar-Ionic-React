@@ -23,7 +23,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 import './theme/variables.css';
 import RegisterPage from './pages/Register';
 import LoginPage from './pages/Login';
-
+import ScheduleMatchComponent from './components/UtakmicaKomponenta';
 setupIonicReact();
 
 const App: React.FC = () => (
@@ -40,6 +40,7 @@ const App: React.FC = () => (
         <Route exact path="/main" component={MainPage} />
         <Route exact path="/register" component={RegisterPage}/>
         <Route exact path="/login" component={LoginPage}/>
+        <Route exact path="/utakmice" component={ScheduleMatchComponent}/>
 
       </IonRouterOutlet>
     </IonReactRouter>

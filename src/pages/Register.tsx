@@ -13,6 +13,7 @@ import {
   IonText
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import axios, { AxiosError } from 'axios'; 
 
 const RegisterPage: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -23,14 +24,21 @@ const RegisterPage: React.FC = () => {
 
     const handleRegister = async () => {
         if (!validateForm()) return; // Prevent the submission if there are validation errors
-
+    
         try {
             const response = await AuthService.register(username, password);
             console.log("Registration successful:", response);
             alert('Registration successful! Redirecting to login page.');
             history.push('/login');
-        } catch (error) {
-            console.error('Register error:', error);
+        } catch (error: unknown) { // Explicitly type error as unknown
+            if (axios.isAxiosError(error) && error.response) {
+                // Extract the error message from the server response
+                const serverMessage = error.response.data.message;
+                alert(serverMessage); // Show the server message in the alert
+            } else {
+                console.error('Register error:', error);
+                alert('An unexpected error occurred. Please try again.');
+            }
         }
     };
 

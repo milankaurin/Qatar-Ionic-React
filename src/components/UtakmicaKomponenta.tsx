@@ -10,11 +10,25 @@ import {
   IonRadio,
   IonItem,
   IonDatetime,
-  IonPage
+  IonPage,
+  IonInput,
+  IonGrid,
+  IonRow,
+  IonCol,
+  IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardContent,
+  IonList,
+  IonModal,
+  IonAlert,
+  IonHeader,
+  IonToolbar,
+  IonTitle
 } from '@ionic/react';
 import StadionService from '../Api/StadionService';
 import UtakmicaService from '../Api/UtakmicaService';
-
+import TimService from '../Api/TimService';
 // Define TypeScript interfaces for the props and state
 interface Team {
   id: number;
@@ -26,12 +40,25 @@ interface Stadium {
   imeStadiona: string;
 }
 
+interface Match {
+  id: number;
+  tim1Id: number;
+  tim2Id: number;
+  vremePocetka: string;
+  stadionId?: number | null;
+  predato?: boolean;
+  tim1Golovi?: number | null;
+  tim2Golovi?: number | null;
+}
+
+
 interface Props {
   teams: Team[];
   onMatchScheduled: () => void;
+  selectedGroupId: number; 
 }
 
-const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled }) => {
+const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, selectedGroupId }) => {
   console.log("Rendering ScheduleMatchComponent", {teams});
   const [matchDate, setMatchDate] = useState<string | null>(null);
   const [selectedTeam1, setSelectedTeam1] = useState<string>('');
@@ -41,6 +68,46 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled }) =>
   const [selectedStadium, setSelectedStadium] = useState<string>('');
   const [availableTeamsForTeam1, setAvailableTeamsForTeam1] = useState<Team[]>([]);
   const [availableTeamsForTeam2, setAvailableTeamsForTeam2] = useState<Team[]>([]);
+  const [matches, setMatches] = useState<any[]>([]);
+
+
+
+  const fetchMatches = async (groupId: number) => {
+    try {
+      const response = await UtakmicaService.getMatchesByGroupId(groupId);
+      console.log(response); 
+      const matches: Match[] = response.data;
+  
+      const teamAndStadiumData = await Promise.all(
+        matches.map(async (match: Match) => {
+          const team1 = await TimService.getTeamById(match.tim1Id);
+          const team2 = await TimService.getTeamById(match.tim2Id);
+  
+          let stadiumName = 'Undefined';
+          if (match.stadionId) {
+            const stadium = await StadionService.getStadiumById(match.stadionId);
+            stadiumName = stadium.imeStadiona;
+          }
+  
+          return {
+            ...match,
+            team1Name:team1.imeTima,
+            team2Name: team2.imeTima,
+            stadiumName: stadiumName,
+          };
+        })
+      );
+  
+      setMatches(teamAndStadiumData);
+    } catch (error) {
+      console.error('Failed to fetch matches:', error);
+      setMatches([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchMatches(selectedGroupId);
+  }, []);
 
   useEffect(() => {
     async function fetchStadiums() {
@@ -96,6 +163,30 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled }) =>
     }
   };
 
+  const handleSetResult = async (matchId: number) => {
+    const match = matches.find(m => m.id === matchId);
+    if (!match) {
+      alert("Utakmica nije pronađena.");
+      return;
+    }
+  }
+
+  const handleDeleteMatch = async (id: number) => {
+    if (window.confirm("Da li ste sigurni da želite da obrišete utakmicu?")) {
+      try {
+        await UtakmicaService.deleteMatch(id);
+        alert("Utakmica je uspešno obrisana!");
+        fetchMatches(selectedGroupId!);
+      } catch (error) {
+        console.error('Failed to delete match:', error);
+        alert("Došlo je do greške pri brisanju utakmice.");
+      }
+    }
+  };
+
+
+
+
   const resetForm = () => {
     setSelectedTeam1('');
     setSelectedTeam2('');
@@ -113,9 +204,41 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled }) =>
 // );
 
   return (
-    
-    
-      <div style={{ marginTop: '40px', textAlign: 'center' }}>
+    <IonPage>
+     
+      <IonContent>
+     <IonCard>
+              <IonCardHeader>
+                <IonCardTitle>Utakmice</IonCardTitle>
+              </IonCardHeader>
+              <IonCardContent>
+                <IonList>
+                  {matches.map(match => (
+                    <IonRow key={match.id}>
+                      <IonCol>{match.team1Name}</IonCol>
+                      <IonCol>{match.team2Name}</IonCol>
+                      <IonCol>{new Date(match.vremePocetka).toLocaleString()}</IonCol>
+                      <IonCol>{match.predato ? 'Predato' : `${match.tim1Golovi} - ${match.tim2Golovi}`}</IonCol>
+                      <IonCol>{match.stadiumName}</IonCol>
+                      <IonCol>
+                        {match.tim1Golovi === null && !match.predato && (
+                          <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
+                            Obriši Utakmicu
+                          </IonButton>
+                        )}
+                        {match.tim1Golovi === null && !match.predato && (
+                          <IonButton color="primary" onClick={() => handleSetResult(match.id)}>
+                            Unesi rezultat
+                          </IonButton>
+                        )}
+                      </IonCol>
+                    </IonRow>
+                  ))}
+                </IonList>
+              </IonCardContent>
+            </IonCard>
+
+      
         <h3>Zakazivanje Utakmice</h3>
         <IonSelect value={selectedTeam1} placeholder="Odaberite Prvi Tim" onIonChange={e => setSelectedTeam1(e.detail.value)}>
           {availableTeamsForTeam1.map(team => (
@@ -169,8 +292,10 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled }) =>
         <IonButton expand="block" onClick={handleMatchSchedule} style={{ marginTop: '20px' }}>
           Zakazite Utakmicu
         </IonButton>
-      </div>
-   
+        </IonContent>
+    
+     
+      </IonPage>
   
   );
 };
