@@ -88,7 +88,7 @@ const MainPage: React.FC = () => {
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>Manage Groups</IonTitle>
+          <IonTitle>Grupe</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">

@@ -1,0 +1,60 @@
+.center-content {
+    display: flex;
+    flex-direction: column; /* Align items in a column */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    height: 100vh; /* Full viewport height to center vertically */
+  }
+  
+  .scrollable-container {
+    overflow-x: auto;
+    width: 100%;
+  }
+  
+  .scrollable-inner {
+    display: flex;
+    width: max-content;
+    
+   
+  }
+  
+  .scrollable-ion-col {
+    min-width: 80px;
+  }
+
+
+
+  .scrollable-ion-col1 {
+    flex: 1 1 0px;  
+  }
+  
+  
+  .scrollable-ion-col2 {
+    flex: 2 1 0px;  
+  }
+
+
+  
+  /* Adjust button size */
+  .small-button {
+    font-size: 14px; /* Smaller font size for the button */
+    --background: #6200ea; /* Use Ionic CSS variables for theming */
+    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    --background-focused: #7b1fa2;
+    --color: #ffffff;
+     
+  }
+  
+  @media (min-width: 1024px) {
+    .scrollable-container {
+      overflow-x: hidden;
+      width: 100%; /* Disable horizontal scrolling on larger screens */
+    }
+  
+    .scrollable-inner {
+      width: 100%;
+      width: max-content; /* Full width on larger screens */
+    }
+  
+ 
+  }

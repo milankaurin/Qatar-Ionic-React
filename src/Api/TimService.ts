@@ -38,9 +38,18 @@ const deleteTeamsByGroupId = async (groupId: number): Promise<any> => {
     }
 };
 
+const deleteTeam = async (id: number): Promise<any> => {
+    try {
+        return await axios.delete(`${API_URL}/${id}`);
+    } catch (error: any) {
+        throw error;
+    }
+};
+
 export default {
     getTeamsByGroupId, 
     createTeam, 
     getTeamById,
-    deleteTeamsByGroupId
+    deleteTeamsByGroupId,
+    deleteTeam
 };

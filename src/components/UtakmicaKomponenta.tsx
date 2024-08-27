@@ -29,6 +29,7 @@ import {
 import StadionService from '../Api/StadionService';
 import UtakmicaService from '../Api/UtakmicaService';
 import TimService from '../Api/TimService';
+import './GrupaKomponenta.css';
 // Define TypeScript interfaces for the props and state
 interface Team {
   id: number;
@@ -49,6 +50,8 @@ interface Match {
   predato?: boolean;
   tim1Golovi?: number | null;
   tim2Golovi?: number | null;
+  tim1Predao?: boolean;  // Add this
+  tim2Predao?: boolean;  // And this
 }
 
 
@@ -75,7 +78,7 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
   const fetchMatches = async (groupId: number) => {
     try {
       const response = await UtakmicaService.getMatchesByGroupId(groupId);
-      console.log(response); 
+      console.log('Fetched matches from server:', response.data);
       const matches: Match[] = response.data;
   
       const teamAndStadiumData = await Promise.all(
@@ -153,8 +156,10 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
     };
 
     try {
+      console.log('Sending match details:', matchDetails); 
       await UtakmicaService.scheduleMatch(matchDetails);
       alert("Utakmica je uspešno zakazana!");
+      fetchMatches(selectedGroupId);
       resetForm();
       onMatchScheduled();
     } catch (error) {
@@ -164,11 +169,41 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
   };
 
   const handleSetResult = async (matchId: number) => {
-    const match = matches.find(m => m.id === matchId);
+    const match = matches.find((m: Match) => m.id === matchId);
     if (!match) {
       alert("Utakmica nije pronađena.");
       return;
     }
+  
+    const matchStartTime = new Date(match.vremePocetka);
+    if (matchStartTime > new Date()) {
+      alert("Nije moguće postaviti rezultat pre zvaničnog vremena početka utakmice.");
+      return;
+    }
+  
+    const tim1Golovi = prompt("Unesite broj golova koje je postigao Tim 1:");
+    const tim2Golovi = prompt("Unesite broj golova koje je postigao Tim 2:");
+  
+    // Provera da li su unosi validni celi brojevi veći ili jednaki nuli
+    if (tim1Golovi !== null && tim2Golovi !== null && isValidScore(tim1Golovi) && isValidScore(tim2Golovi)) {
+      try {
+        await UtakmicaService.setMatchResult(matchId, parseInt(tim1Golovi), parseInt(tim2Golovi));
+        fetchMatches(selectedGroupId);  // Osvežava podatke o utakmicama
+           // Osvežava tabelu timova da odrazi promene u rezultatima
+      } catch (error) {
+        console.error('Greška pri postavljanju rezultata utakmice:', error);
+        alert("Došlo je do greške pri postavljanju rezultata.");
+      }
+    } else {
+      alert("Unesite validne celobrojne vrednosti koje su veće ili jednake nuli za golove.");
+    }
+  };
+  
+  // Function to check if the score is a valid non-negative integer
+  function isValidScore(score: string | null): boolean {
+    if (score === null) return false;  // Prompt can return null if canceled
+    const scoreNum = Number(score);
+    return Number.isInteger(scoreNum) && scoreNum >= 0;
   }
 
   const handleDeleteMatch = async (id: number) => {
@@ -207,36 +242,56 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
     <IonPage>
      
       <IonContent>
-     <IonCard>
-              <IonCardHeader>
-                <IonCardTitle>Utakmice</IonCardTitle>
-              </IonCardHeader>
-              <IonCardContent>
-                <IonList>
-                  {matches.map(match => (
-                    <IonRow key={match.id}>
-                      <IonCol>{match.team1Name}</IonCol>
-                      <IonCol>{match.team2Name}</IonCol>
-                      <IonCol>{new Date(match.vremePocetka).toLocaleString()}</IonCol>
-                      <IonCol>{match.predato ? 'Predato' : `${match.tim1Golovi} - ${match.tim2Golovi}`}</IonCol>
-                      <IonCol>{match.stadiumName}</IonCol>
-                      <IonCol>
-                        {match.tim1Golovi === null && !match.predato && (
-                          <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
-                            Obriši Utakmicu
-                          </IonButton>
-                        )}
-                        {match.tim1Golovi === null && !match.predato && (
-                          <IonButton color="primary" onClick={() => handleSetResult(match.id)}>
-                            Unesi rezultat
-                          </IonButton>
-                        )}
-                      </IonCol>
-                    </IonRow>
-                  ))}
-                </IonList>
-              </IonCardContent>
-            </IonCard>
+       <div className="scrollable-container">
+      <div className="scrollable-inner"> 
+      <IonCard>
+  <IonCardHeader>
+    <IonCardTitle>Utakmice</IonCardTitle>
+  </IonCardHeader>
+  <IonCardContent>
+    <IonList>
+      <IonRow>
+        <IonCol size="2"><strong>Tim 1</strong></IonCol>
+        <IonCol size="2"><strong>Tim 2</strong></IonCol>
+        <IonCol size="3"><strong>Vreme Početka</strong></IonCol>
+        <IonCol size="2"><strong>Rezultat</strong></IonCol>
+        <IonCol size="2"><strong>Stadion</strong></IonCol>
+        <IonCol size="1"><strong>Akcije</strong></IonCol>
+      </IonRow>
+      {matches.map(match => (
+        <IonRow key={match.id}>
+          <IonCol size="2">{match.team1Name}</IonCol>
+          <IonCol size="2">{match.team2Name}</IonCol>
+          <IonCol size="3">{new Date(match.vremePocetka).toLocaleString()}</IonCol>
+          <IonCol size="2">
+            {match.predato ? (
+              match.tim1Golovi === 0 && match.tim2Golovi > 0 ? "Tim 1 predao" : 
+              match.tim2Golovi === 0 && match.tim1Golovi > 0 ? "Tim 2 predao" : 
+              `${match.tim1Golovi} - ${match.tim2Golovi}`
+            ) : (
+              `${match.tim1Golovi} - ${match.tim2Golovi}`
+            )}
+          </IonCol>
+          <IonCol size="2">{match.stadiumName}</IonCol>
+          <IonCol size="1">
+            {match.tim1Golovi === null && !match.predato && (
+              <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
+                Obriši Utakmicu
+              </IonButton>
+            )}
+            {match.tim1Golovi === null && !match.predato && (
+              <IonButton color="primary" onClick={() => handleSetResult(match.id)}>
+                Unesi rezultat
+              </IonButton>
+            )}
+          </IonCol>
+        </IonRow>
+      ))}
+    </IonList>
+  </IonCardContent>
+</IonCard>
+             </div>
+            </div> 
 
       
         <h3>Zakazivanje Utakmice</h3>
