@@ -1,0 +1,26 @@
+.proceed-button {
+    width: 100%; /* Makes the button expand to fill its container */
+    padding: 10px 20px;
+    font-size: 16px;
+    text-align: center;
+    --background: #6200ea; /* Use Ionic CSS variables for theming */
+    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    --background-focused: #7b1fa2; /* Consistent with hover */
+    --border-radius: 8px; /* Ionic supports CSS variables for border radius */
+    font-family: 'Roboto', sans-serif; /* Ensure the font is loaded as part of global styles if needed */
+    --color: #ffffff;
+}
+
+.content-container {
+    width: 100%; /* Za manje uređaje zauzima celu širinu */
+    max-width: 100%; /* Osigurava da širina ne prelazi 100% */
+    margin: 0 auto; /* Centriranje na većim uređajima */
+   
+}
+
+@media (min-width: 768px) {
+    .content-container {
+        width: 50%; /* Za veće uređaje zauzima polovinu širine */
+        
+    }
+}

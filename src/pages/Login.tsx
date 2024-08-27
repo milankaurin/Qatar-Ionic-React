@@ -14,6 +14,7 @@ import {
   IonAlert
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import './Login.css';
 
 const LoginPage: React.FC = () => {
     const [username, setUsername] = useState<string>('');
@@ -60,37 +61,37 @@ const LoginPage: React.FC = () => {
                     <IonTitle>Login</IonTitle>
                 </IonToolbar>
             </IonHeader>
-            <IonContent className="ion-padding">
-                <IonItem>
-                    <IonLabel position="floating">Username</IonLabel>
-                    <IonInput 
-                        value={username} 
-                        onIonChange={(e) => setUsername(e.detail.value!)} 
-                        clearInput
-                    />
-                </IonItem>
-                <IonItem>
-                    <IonLabel position="floating">Password</IonLabel>
-                    <IonInput 
-                        type="password" 
-                        value={password} 
-                        onIonChange={(e) => setPassword(e.detail.value!)} 
-                        clearInput
-                    />
-                </IonItem>
-                <IonButton expand="block" onClick={handleLogin}>
-                    Login
-                </IonButton>
-                {showAlert && (
-                    <IonAlert
-                        isOpen={showAlert}
-                        onDidDismiss={() => setShowAlert(false)}
-                        header='Login Failed'
-                        message={errorMessage}
-                        buttons={['OK']}
-                    />
-                )}
-            </IonContent>
+            <IonContent className="content-container">
+  <IonItem>
+    <IonLabel position="floating" style={{ marginBottom: '10px' }}>Username</IonLabel>
+    <IonInput 
+      value={username} 
+      onIonChange={(e) => setUsername(e.detail.value!)} 
+      clearInput
+    />
+  </IonItem>
+  <IonItem>
+    <IonLabel position="floating" style={{ marginBottom: '10px' }}>Password</IonLabel>
+    <IonInput 
+      type="password" 
+      value={password} 
+      onIonChange={(e) => setPassword(e.detail.value!)} 
+      clearInput
+    />
+  </IonItem>
+  <IonButton expand="block" onClick={handleLogin} className="proceed-button">
+    Login
+  </IonButton>
+  {showAlert && (
+    <IonAlert
+      isOpen={showAlert}
+      onDidDismiss={() => setShowAlert(false)}
+      header='Login Failed'
+      message={errorMessage}
+      buttons={['OK']}
+    />
+  )}
+</IonContent>
         </IonPage>
     );
 };

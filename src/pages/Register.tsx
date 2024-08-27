@@ -14,7 +14,7 @@ import {
 } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import axios, { AxiosError } from 'axios'; 
-
+import './Login.css';
 const RegisterPage: React.FC = () => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
@@ -96,7 +96,7 @@ const RegisterPage: React.FC = () => {
                         <p>{passwordError}</p>
                     </IonText>
                 )}
-                <IonButton expand="block" onClick={handleRegister}>
+                <IonButton expand="block" onClick={handleRegister} className="proceed-button">
                     Register
                 </IonButton>
             </IonContent>
