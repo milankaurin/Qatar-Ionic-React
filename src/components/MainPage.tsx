@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import TimService from '../Api/TimService';
 import GrupaKomponenta from './GrupaKomponenta';
 import axios from 'axios';
+import './GrupaKomponenta.css';
 
 
 const MainPage: React.FC = () => {
@@ -64,10 +65,10 @@ useEffect(() => {
               You are not logged in. Please log in or register to continue.
             </IonText>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <IonButton expand="block" color="secondary" onClick={() => history.push('/login')}>
+              <IonButton expand="block" className="small-button1" onClick={() => history.push('/login')}>
                 Log In
               </IonButton>
-              <IonButton expand="block" color="secondary" onClick={() => history.push('/register')}>
+              <IonButton expand="block" className="small-button1" onClick={() => history.push('/register')}>
                 Register
               </IonButton>
             </div>

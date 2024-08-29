@@ -30,6 +30,13 @@ import StadionService from '../Api/StadionService';
 import UtakmicaService from '../Api/UtakmicaService';
 import TimService from '../Api/TimService';
 import './GrupaKomponenta.css';
+import { IonIcon } from '@ionic/react';
+import { arrowBack } from 'ionicons/icons';
+import { useHistory } from 'react-router-dom';  // Import useHistory
+
+import axios, { AxiosError, Axios } from 'axios';
+
+
 // Define TypeScript interfaces for the props and state
 interface Team {
   id: number;
@@ -59,9 +66,10 @@ interface Props {
   teams: Team[];
   onMatchScheduled: () => void;
   selectedGroupId: number; 
+  onBack: () => void; 
 }
 
-const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, selectedGroupId }) => {
+const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, selectedGroupId,onBack  }) => {
   console.log("Rendering ScheduleMatchComponent", {teams});
   const [matchDate, setMatchDate] = useState<string | null>(null);
   const [selectedTeam1, setSelectedTeam1] = useState<string>('');
@@ -72,8 +80,17 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
   const [availableTeamsForTeam1, setAvailableTeamsForTeam1] = useState<Team[]>([]);
   const [availableTeamsForTeam2, setAvailableTeamsForTeam2] = useState<Team[]>([]);
   const [matches, setMatches] = useState<any[]>([]);
+  const history = useHistory();
+  const [successAlertMessage, setSuccessAlertMessage] = useState('');
+const [showSuccessAlert, setShowSuccessAlert] = useState(false);
 
+const [showResultAlert, setShowResultAlert] = useState(false);
+const [currentMatchId, setCurrentMatchId] = useState<number | null>(null);
+const [team1Goals, setTeam1Goals] = useState<string>('');
+const [team2Goals, setTeam2Goals] = useState<string>('');
 
+const [alertMessage, setAlertMessage] = useState('');
+const [showAlert, setShowAlert] = useState(false);
 
   const fetchMatches = async (groupId: number) => {
     try {
@@ -140,6 +157,35 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
   }, [teams, selectedTeam1, selectedTeam2]);
 
   const handleMatchSchedule = async () => {
+
+      // Provera da li su oba tima odabrana
+  if (!selectedTeam1 || !selectedTeam2) {
+    setAlertMessage('Morate odabrati oba tima.');
+    setShowAlert(true);
+    return;
+  }
+
+  // Provera da li je stadion odabran ako je utakmica igrana
+  if (matchOutcome === 'played' && !selectedStadium) {
+    setAlertMessage('Morate odabrati stadion.');
+    setShowAlert(true);
+    return;
+  }
+
+  // Provera da li je vreme odabrano i da li je između 14:00 i 23:00 ako je utakmica igrana
+  if (matchOutcome === 'played' && matchDate) {
+    const matchTime = new Date(matchDate).getHours();
+    if (matchTime < 14 || matchTime >= 23) {
+      setAlertMessage('Vreme početka utakmice mora biti između 14:00 i 23:00.');
+      setShowAlert(true);
+      return;
+    }
+  } else if (matchOutcome === 'played' && !matchDate) {
+    setAlertMessage('Morate uneti vreme početka utakmice.');
+    setShowAlert(true);
+    return;
+  }
+
     const forfeitDate = new Date('2024-08-16T20:00:00');
     const isForfeit = matchOutcome !== 'played';
     const matchDetails = {
@@ -158,13 +204,25 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
     try {
       console.log('Sending match details:', matchDetails); 
       await UtakmicaService.scheduleMatch(matchDetails);
-      alert("Utakmica je uspešno zakazana!");
+      
+      // Postavljanje poruke o uspehu i prikazivanje alert-a
+      setSuccessAlertMessage("Utakmica je uspešno zakazana!");
+      setShowSuccessAlert(true);
+  
       fetchMatches(selectedGroupId);
       resetForm();
       onMatchScheduled();
     } catch (error) {
       console.error('Failed to schedule the match:', error);
-      alert("Došlo je do greške pri zakazivanju utakmice.");
+  
+      // Provera da li je error instanca AxiosError
+      if (error instanceof AxiosError) {
+        setAlertMessage(error.response?.data || error.message);
+      } else {
+        setAlertMessage('Došlo je do neočekivane greške.');
+      }
+  
+      setShowAlert(true);
     }
   };
 
@@ -198,7 +256,6 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
       alert("Unesite validne celobrojne vrednosti koje su veće ili jednake nuli za golove.");
     }
   };
-  
   // Function to check if the score is a valid non-negative integer
   function isValidScore(score: string | null): boolean {
     if (score === null) return false;  // Prompt can return null if canceled
@@ -220,7 +277,13 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
   };
 
 
-
+   // Kreirajte history objekat
+  
+    // Funkcija za navigaciju na glavnu komponentu
+    const handleBack = () => {
+      history.push('/main');  // Navigirajte nazad na rutu '/main'
+    };
+  
 
   const resetForm = () => {
     setSelectedTeam1('');
@@ -238,8 +301,28 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
 //   <div>Test - Are teams available? {teams.length}</div>
 // );
 
+  const [pom1, setpom1] = useState<string>('');
+  const [pom2, setpom2] = useState<string>('');
+
   return (
+    
     <IonPage>
+ 
+<IonAlert
+  isOpen={showAlert}
+  onDidDismiss={() => setShowAlert(false)}
+  header={'Greška pri zakazivanju'}
+  message={alertMessage}
+  buttons={['OK']}
+/>
+
+<IonAlert
+  isOpen={showSuccessAlert}
+  onDidDismiss={() => setShowSuccessAlert(false)}
+  header={'Uspeh'}
+  message={successAlertMessage}
+  buttons={['OK']}
+/>
      <IonContent className="page-content">
     <div className="scrollable-container1">
       <div className="scrollable-inner1">
@@ -255,7 +338,7 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
               <IonCol size="2.2"><strong>Vreme Početka</strong></IonCol>
               <IonCol size="1.5"><strong>Rezultat</strong></IonCol>
               <IonCol size="1.7"><strong>Stadion</strong></IonCol>
-              <IonCol size="1"><strong>Akcije</strong></IonCol>
+              <IonCol size="2"><strong>Akcije</strong></IonCol>
             </IonRow>
             {matches.map(match => (
               <IonRow key={match.id}>
@@ -272,7 +355,7 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
                   )}
                 </IonCol>
                 <IonCol size="1.7">{match.stadiumName}</IonCol>
-                <IonCol size="1">
+                <IonCol size="2">
                   {match.tim1Golovi === null && !match.predato && (
                     <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
                       Obriši Utakmicu
@@ -317,7 +400,21 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
         <IonCol>
           <div className="radio-group">
             <IonRadioGroup value={matchOutcome} onIonChange={e => setMatchOutcome(e.detail.value)}>
-              {/* Radio buttons */}
+            <IonListHeader>
+            <IonLabel>Ishod Utakmice</IonLabel>
+          </IonListHeader>
+            <IonItem>
+            <IonLabel>Utakmica se odigrava</IonLabel>
+            <IonRadio slot="start" value="played" />
+          </IonItem>
+          <IonItem>
+            <IonLabel>Tim 1 predao</IonLabel>
+            <IonRadio slot="start" value="forfeit1" />
+          </IonItem>
+          <IonItem>
+            <IonLabel>Tim 2 predao</IonLabel>
+            <IonRadio slot="start" value="forfeit2" />
+          </IonItem>
             </IonRadioGroup>
           </div>
         </IonCol>
@@ -347,12 +444,22 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
         </>
       )}
       <IonRow>
-        <IonCol>
-          <IonButton expand="block" onClick={handleMatchSchedule} className="proceed-button" style={{ marginTop: '20px' }}>
-            Zakazite Utakmicu
-          </IonButton>
-        </IonCol>
-      </IonRow>
+    {/* Levo dugme */}
+    <IonCol size="3">
+      <IonButton expand="block" onClick={onBack} className="small-button1" style={{ marginTop: '20px' }}>
+        {/* Možete koristiti ikonu strelice ili tekst */}
+        <IonIcon slot="start" icon={arrowBack} />
+        Nazad
+      </IonButton>
+    </IonCol>
+
+    {/* Desno dugme za zakazivanje */}
+    <IonCol size="9">
+      <IonButton expand="block" onClick={handleMatchSchedule} className="small-button1" style={{ marginTop: '20px' }}>
+        Zakazite Utakmicu
+      </IonButton>
+    </IonCol>
+  </IonRow>
     </IonGrid>
   </IonContent>
 </IonPage>

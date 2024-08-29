@@ -23,6 +23,18 @@
     font-family: 'Roboto', sans-serif; /* Ensure the font is loaded as part of global styles if needed */
 }
 
+.red-button {
+    width: 100%; /* Makes the button expand to fill its container */
+    
+    font-size: 16px;
+    text-align: center;
+    --background: #6200ea; /* Use Ionic CSS variables for theming */
+    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    --background-focused: #7b1fa2; /* Consistent with hover */
+    --border-radius: 10px; /* Ionic supports CSS variables for border radius */
+    font-family: 'Roboto', sans-serif; /* Ensure the font is loaded as part of global styles if needed */
+}
+
 /* Optional: You might want to add hover effects for web-specific interactions */
 @media (hover: hover) {
     .proceed-button:hover {

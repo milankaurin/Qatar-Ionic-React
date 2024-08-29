@@ -1,0 +1,8 @@
+.small-button1 {
+    
+    --background: #6200ea; /* Use Ionic CSS variables for theming */
+    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    --background-focused: #7b1fa2;
+    --color: #ffffff;
+     
+  }

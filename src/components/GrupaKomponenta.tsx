@@ -20,13 +20,14 @@ import GrupaService from '../Api/GrupaService';
 import TimService from '../Api/TimService';
 import UtakmicaService from '../Api/UtakmicaService';
 import StadionService from '../Api/StadionService';
-import ScheduleMatchComponent from './UtakmicaKomponenta';
+import ScheduleMatchComponent from '../components/UtakmicaKomponenta';
 import { useHistory } from 'react-router-dom';
 import './GrupaKomponenta.css';
 
 interface GrupaKomponentaProps {
   onGroupSelect: (groupId: number) => Promise<void>;
 }
+
 
 const GrupaKomponenta: React.FC<GrupaKomponentaProps> = ({ onGroupSelect }) => {
   const [groups, setGroups] = useState<any[]>([]);
@@ -45,11 +46,18 @@ const [deleting, setDeleting] = useState(false);
 const [currentTeamId, setCurrentTeamId] = useState<number | null>(null);
 const [showTeamError, setShowTeamError] = useState(false);
 const [teamErrorMessage, setTeamErrorMessage] = useState('');
-
+const toggleScheduleView = () => {
+  setShowScheduleComponent(prev => !prev);
+  if (selectedGroupId !== null) {
+    fetchTeams(selectedGroupId);
+  
+}};
 
   useEffect(() => {
     fetchGroups();
   }, []);
+
+
 
   const fetchGroups = async () => {
     try {
@@ -140,6 +148,7 @@ const [teamErrorMessage, setTeamErrorMessage] = useState('');
   };
 
 
+
   const handleDeleteTeam = (id:number) => {
     setCurrentTeamId(id);
     setShowDeleteConfirm(true);
@@ -202,10 +211,9 @@ const [teamErrorMessage, setTeamErrorMessage] = useState('');
         selectedGroupId !== null && (
           <ScheduleMatchComponent
             teams={teams}
-            onMatchScheduled={() => {
-              // Hide the component after scheduling a match
-            }}
+            onMatchScheduled={toggleScheduleView}
             selectedGroupId={selectedGroupId}
+            onBack={toggleScheduleView}  
           />
           
         )
@@ -306,9 +314,9 @@ const [teamErrorMessage, setTeamErrorMessage] = useState('');
 )}
               {/* <div style={{ justifyContent: 'center', alignItems: 'center' }}>
               <div className="existing-content"> */}
-              <div className="scrollable-container">
-                <div className="scrollable-inner">
-                  <IonCard>
+              <div className="scrollable-container ion-justify-content-center ion-align-items-center">
+                <div className="scrollable-inner ion-justify-content-center ion-align-items-center">
+                  <IonCard className="ion-justify-content-center ion-align-items-center">
                     <IonCardHeader>
                       <IonCardTitle>Timovi</IonCardTitle>
                     </IonCardHeader>

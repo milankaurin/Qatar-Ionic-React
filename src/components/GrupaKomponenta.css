@@ -9,11 +9,14 @@
   .scrollable-container {
     overflow-x: auto;
     width: 100%;
+    justify-content: center; 
   }
   
   .scrollable-inner {
     display: flex;
     width: max-content;
+    justify-content: center; 
+
     
    
   }
@@ -47,8 +50,18 @@
      
   }
   
+  .small-button1 {
+    
+    --background: #6200ea; /* Use Ionic CSS variables for theming */
+    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    --background-focused: #7b1fa2;
+    --color: #ffffff;
+     
+  }
+
   @media (min-width: 1024px) {
     .scrollable-container {
+      display: flex;
       overflow-x: hidden;
       width: 100%; /* Disable horizontal scrolling on larger screens */
     }

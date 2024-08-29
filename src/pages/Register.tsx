@@ -48,34 +48,48 @@ const RegisterPage: React.FC = () => {
 
     const validateForm = (): boolean => {
         let isValid = true;
-    
-        // Validation for username
+
+        
+
+        // Validacija za korisničko ime
         if (!username.trim()) {
-            setUsernameError('Username is required');
+            setUsernameError('Korisničko ime je obavezno');
+            isValid = false;
+        } else if (username.length < 3) {
+            setUsernameError('Korisničko ime mora imati najmanje 3 karaktera');
             isValid = false;
         } else {
             setUsernameError('');
         }
     
-        // Validation for password
+        // Validacija za lozinku
         if (!password) {
-            setPasswordError('Password is required');
+            setPasswordError('Lozinka je obavezna');
+            isValid = false;
+        } else if (password.length < 3) {
+            setPasswordError('Lozinka mora imati najmanje 3 karaktera');
             isValid = false;
         } else {
             setPasswordError('');
         }
     
-        // Validation for first name
+        // Validacija za ime
         if (!firstName.trim()) {
-            setFirstNameError('First name is required');
+            setFirstNameError('Ime je obavezno');
+            isValid = false;
+        } else if (firstName.length < 2) {
+            setFirstNameError('Ime mora imati najmanje 2 karaktera');
             isValid = false;
         } else {
             setFirstNameError('');
         }
     
-        // Validation for last name
+        // Validacija za prezime
         if (!lastName.trim()) {
-            setLastNameError('Last name is required');
+            setLastNameError('Prezime je obavezno');
+            isValid = false;
+        } else if (lastName.length < 2) {
+            setLastNameError('Prezime mora imati najmanje 2 karaktera');
             isValid = false;
         } else {
             setLastNameError('');
@@ -146,7 +160,7 @@ const RegisterPage: React.FC = () => {
                             <p>{passwordError}</p>
                         </IonText>
                     )}
-                    <IonButton expand="block" onClick={handleRegister} style={{ width: '100%' }}>
+                    <IonButton expand="block" className="small-button1" onClick={handleRegister} style={{ width: '100%' , marginTop: '10px'  }}>
                         Registruj se
                     </IonButton>
                 </div>
