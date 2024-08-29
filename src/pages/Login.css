@@ -1,15 +1,29 @@
-.proceed-button {
-    width: 100%; /* Makes the button expand to fill its container */
+.login-form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .proceed-button {
+    height: 50px; /* Increased height */
     padding: 10px 20px;
     font-size: 16px;
     text-align: center;
-    --background: #6200ea; /* Use Ionic CSS variables for theming */
-    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
-    --background-focused: #7b1fa2; /* Consistent with hover */
-    --border-radius: 8px; /* Ionic supports CSS variables for border radius */
-    font-family: 'Roboto', sans-serif; /* Ensure the font is loaded as part of global styles if needed */
+    --background: #6200ea;
+    --background-activated: #7b1fa2;
+    --background-focused: #7b1fa2;
+    --border-radius: 8px;
+    font-family: 'Roboto', sans-serif;
     --color: #ffffff;
-}
+    margin-top: 20px; /* Add some top margin if needed */
+  }
+
+  .wide-input {
+    width: 90%; /* Povećava širinu polja za unos */
+    --padding-start: 10px; /* Dodaje padding s leva */
+    --padding-end: 10px; /* Dodaje padding s desna */
+  }
 
 .content-container {
     width: 100%; /* Za manje uređaje zauzima celu širinu */

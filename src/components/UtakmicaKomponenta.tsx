@@ -240,118 +240,122 @@ const ScheduleMatchComponent: React.FC<Props> = ({ teams, onMatchScheduled, sele
 
   return (
     <IonPage>
-     
-      <IonContent>
-       <div className="scrollable-container">
-      <div className="scrollable-inner"> 
-      <IonCard>
-  <IonCardHeader>
-    <IonCardTitle>Utakmice</IonCardTitle>
-  </IonCardHeader>
-  <IonCardContent>
-    <IonList>
-      <IonRow>
-        <IonCol size="2"><strong>Tim 1</strong></IonCol>
-        <IonCol size="2"><strong>Tim 2</strong></IonCol>
-        <IonCol size="3"><strong>Vreme Početka</strong></IonCol>
-        <IonCol size="2"><strong>Rezultat</strong></IonCol>
-        <IonCol size="2"><strong>Stadion</strong></IonCol>
-        <IonCol size="1"><strong>Akcije</strong></IonCol>
-      </IonRow>
-      {matches.map(match => (
-        <IonRow key={match.id}>
-          <IonCol size="2">{match.team1Name}</IonCol>
-          <IonCol size="2">{match.team2Name}</IonCol>
-          <IonCol size="3">{new Date(match.vremePocetka).toLocaleString()}</IonCol>
-          <IonCol size="2">
-            {match.predato ? (
-              match.tim1Golovi === 0 && match.tim2Golovi > 0 ? "Tim 1 predao" : 
-              match.tim2Golovi === 0 && match.tim1Golovi > 0 ? "Tim 2 predao" : 
-              `${match.tim1Golovi} - ${match.tim2Golovi}`
-            ) : (
-              `${match.tim1Golovi} - ${match.tim2Golovi}`
-            )}
-          </IonCol>
-          <IonCol size="2">{match.stadiumName}</IonCol>
-          <IonCol size="1">
-            {match.tim1Golovi === null && !match.predato && (
-              <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
-                Obriši Utakmicu
-              </IonButton>
-            )}
-            {match.tim1Golovi === null && !match.predato && (
-              <IonButton color="primary" onClick={() => handleSetResult(match.id)}>
-                Unesi rezultat
-              </IonButton>
-            )}
-          </IonCol>
-        </IonRow>
-      ))}
-    </IonList>
-  </IonCardContent>
-</IonCard>
-             </div>
-            </div> 
+     <IonContent className="page-content">
+    <div className="scrollable-container1">
+      <div className="scrollable-inner1">
+        <IonCard>
+          <IonCardHeader>
+            <IonCardTitle>Utakmice</IonCardTitle>
+          </IonCardHeader>
+          <IonCardContent>
+            <IonList>
+              <IonRow>
+              <IonCol size="1"><strong>Tim 1</strong></IonCol>
+              <IonCol size="1"><strong>Tim 2</strong></IonCol>
+              <IonCol size="2.2"><strong>Vreme Početka</strong></IonCol>
+              <IonCol size="1.5"><strong>Rezultat</strong></IonCol>
+              <IonCol size="1.7"><strong>Stadion</strong></IonCol>
+              <IonCol size="1"><strong>Akcije</strong></IonCol>
+            </IonRow>
+            {matches.map(match => (
+              <IonRow key={match.id}>
+                <IonCol size="1">{match.team1Name}</IonCol>
+                <IonCol size="1">{match.team2Name}</IonCol>
+                <IonCol size="2.2">{new Date(match.vremePocetka).toLocaleString()}</IonCol>
+                <IonCol size="1.5">
+                  {match.predato ? (
+                    match.tim1Golovi === 0 && match.tim2Golovi > 0 ? "Tim 1 predao" : 
+                    match.tim2Golovi === 0 && match.tim1Golovi > 0 ? "Tim 2 predao" : 
+                    `${match.tim1Golovi} - ${match.tim2Golovi}`
+                  ) : (
+                    `${match.tim1Golovi} - ${match.tim2Golovi}`
+                  )}
+                </IonCol>
+                <IonCol size="1.7">{match.stadiumName}</IonCol>
+                <IonCol size="1">
+                  {match.tim1Golovi === null && !match.predato && (
+                    <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
+                      Obriši Utakmicu
+                    </IonButton>
+                  )}
+                  {match.tim1Golovi === null && !match.predato && (
+                    <IonButton color="primary" onClick={() => handleSetResult(match.id)}>
+                      Unesi rezultat
+                    </IonButton>
+                  )}
+                </IonCol>
+              </IonRow>
+            ))}
+          </IonList>
+        </IonCardContent>
+      </IonCard>
+    </div>
+  </div>
 
       
-        <h3>Zakazivanje Utakmice</h3>
-        <IonSelect value={selectedTeam1} placeholder="Odaberite Prvi Tim" onIonChange={e => setSelectedTeam1(e.detail.value)}>
-          {availableTeamsForTeam1.map(team => (
-            <IonSelectOption key={team.id} value={team.id.toString()}>{team.imeTima}</IonSelectOption>
-          ))}
-        </IonSelect>
-
-        <IonSelect value={selectedTeam2} placeholder="Odaberite Drugi Tim" onIonChange={e => setSelectedTeam2(e.detail.value)}>
-          {availableTeamsForTeam2.map(team => (
-            <IonSelectOption key={team.id} value={team.id.toString()}>{team.imeTima}</IonSelectOption>
-          ))}
-        </IonSelect>
-
-        <IonRadioGroup value={matchOutcome} onIonChange={e => setMatchOutcome(e.detail.value)}>
-          <IonListHeader>
-            <IonLabel>Rezultat Utakmice</IonLabel>
-          </IonListHeader>
-          <IonItem>
-            <IonLabel>Utakmica se odigrava</IonLabel>
-            <IonRadio slot="start" value="played" />
-          </IonItem>
-          <IonItem>
-            <IonLabel>Tim 1 predao</IonLabel>
-            <IonRadio slot="start" value="forfeit1" />
-          </IonItem>
-          <IonItem>
-            <IonLabel>Tim 2 predao</IonLabel>
-            <IonRadio slot="start" value="forfeit2" />
-          </IonItem>
-        </IonRadioGroup>
-
-        {matchOutcome === 'played' && (
-          <>
-            <IonSelect value={selectedStadium} placeholder="Odaberite Stadion" onIonChange={e => setSelectedStadium(e.detail.value)}>
-              {stadiums.map(stadium => (
-                <IonSelectOption key={stadium.id} value={stadium.id.toString()}>{stadium.imeStadiona}</IonSelectOption>
-              ))}
-            </IonSelect>
-
-            <IonDatetime
-    value={matchDate}
-    min="2020"
-    max="2030"
-    onIonChange={handleDateChange}
-    presentation="date-time"  // Alternative to displayFormat for newer Ionic versions
-/>
-
-          </>
-        )}
-
-        <IonButton expand="block" onClick={handleMatchSchedule} style={{ marginTop: '20px' }}>
-          Zakazite Utakmicu
-        </IonButton>
-        </IonContent>
-    
-     
-      </IonPage>
-  
+  <h3 style={{ marginLeft: '30px'}} >Zakazivanje Utakmice</h3>
+    <IonGrid>
+      <IonRow>
+        <IonCol>
+          <IonSelect style={{ marginLeft: '30px'}}  value={selectedTeam1} placeholder="Odaberite Prvi Tim" onIonChange={e => setSelectedTeam1(e.detail.value)}>
+            {availableTeamsForTeam1.map(team => (
+              <IonSelectOption key={team.id} value={team.id.toString()}>{team.imeTima}</IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol>
+          <IonSelect style={{ marginLeft: '30px'}} value={selectedTeam2} placeholder="Odaberite Drugi Tim" onIonChange={e => setSelectedTeam2(e.detail.value)}>
+            {availableTeamsForTeam2.map(team => (
+              <IonSelectOption key={team.id} value={team.id.toString()}>{team.imeTima}</IonSelectOption>
+            ))}
+          </IonSelect>
+        </IonCol>
+      </IonRow>
+      <IonRow>
+        <IonCol>
+          <div className="radio-group">
+            <IonRadioGroup value={matchOutcome} onIonChange={e => setMatchOutcome(e.detail.value)}>
+              {/* Radio buttons */}
+            </IonRadioGroup>
+          </div>
+        </IonCol>
+      </IonRow>
+      {matchOutcome === 'played' && (
+        <>
+          <IonRow>
+            <IonCol>
+              <IonSelect style={{ marginLeft: '30px'}} value={selectedStadium} placeholder="Odaberite Stadion" onIonChange={e => setSelectedStadium(e.detail.value)}>
+                {stadiums.map(stadium => (
+                  <IonSelectOption key={stadium.id} value={stadium.id.toString()}>{stadium.imeStadiona}</IonSelectOption>
+                ))}
+              </IonSelect>
+            </IonCol>
+          </IonRow>
+          <IonRow>
+            <IonCol style={{ marginLeft: '30px', marginRight: '30px' }} >
+              <IonDatetime
+                value={matchDate}
+                min="2020"
+                max="2030"
+                onIonChange={handleDateChange}
+                presentation="date-time"
+              />
+            </IonCol>
+          </IonRow>
+        </>
+      )}
+      <IonRow>
+        <IonCol>
+          <IonButton expand="block" onClick={handleMatchSchedule} className="proceed-button" style={{ marginTop: '20px' }}>
+            Zakazite Utakmicu
+          </IonButton>
+        </IonCol>
+      </IonRow>
+    </IonGrid>
+  </IonContent>
+</IonPage>
   );
 };
 

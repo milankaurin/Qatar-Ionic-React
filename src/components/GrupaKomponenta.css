@@ -24,15 +24,17 @@
 
 
 
-  .scrollable-ion-col1 {
-    flex: 1 1 0px;  
+  .scrollable-container1 {
+    overflow-x: auto; /* Omogućava horizontalno skrolovanje */
   }
   
-  
-  .scrollable-ion-col2 {
-    flex: 2 1 0px;  
+  .scrollable-inner1 {
+    min-width: 700px; /* Minimalna širina unutrašnjeg dela, podesite prema potrebi */
   }
-
+  
+  .ion-col1 {
+    white-space: nowrap; /* Sprečava prelamanje teksta u kolonama */
+  }
 
   
   /* Adjust button size */
@@ -57,4 +59,41 @@
     }
   
  
+    .page-content {
+      padding: 16px; /* Dodaje padding oko sadržaja */
+    }
+    
+    .select-input {
+      --padding-start: 8px; /* Dodaje unutrašnji padding za select komponente */
+      --padding-end: 8px;
+      margin-bottom: 16px; /* Razmak između select komponenata */
+    }
+    
+    .radio-group {
+      margin-bottom: 16px; /* Razmak nakon radio grupa */
+    }
+    
+    .match-button {
+      font-size: 1.2em; /* Veća veličina teksta za dugme */
+      height: 50px; /* Veća visina dugmeta */
+    }
+
+
+
+    .match-button {
+      font-size: 1.2em;
+      height: 50px; /* Veća visina dugmeta */
+      width: 100%; /* Postavlja dugme da zauzima celu širinu kolone */
+    }
+    
+    .date-picker {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+       /* Centrira kalendar */
+      margin-left: 30px; /* Dodaje horizontalni padding */
+    }
+
+
+
   }

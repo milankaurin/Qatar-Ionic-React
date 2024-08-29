@@ -13,8 +13,8 @@ const LandingPage: React.FC = () => {
     return (
         <IonPage>
         <IonHeader>
-            <IonToolbar>
-                <IonTitle>Dobrodošli na Svetsko Prvenstvo u Kataru 2022</IonTitle>
+            <IonToolbar className="ion-toolbar">
+                <IonTitle className="ion-title">Dobrodošli na Svetsko Prvenstvo u Kataru 2022</IonTitle>
             </IonToolbar>
         </IonHeader>
         <IonContent className="ion-padding">

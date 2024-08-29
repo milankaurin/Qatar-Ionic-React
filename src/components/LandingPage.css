@@ -30,3 +30,25 @@
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); /* Adds shadow on hover */
     }
 }
+
+/* Base style for larger screens */
+.ion-title {
+    font-size: 20px; /* Default font size */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 900px) {
+    .ion-title {
+        flex: 1;  
+        text-align: center;
+        font-size: 4vw; /* 1vw is 1% of the viewport's width */
+
+        padding: 0; /* Smaller font size for mobile devices */
+    }
+    .ion-toolbar {
+        display: flex;
+        justify-content: space-between;  
+        align-items: center;
+        padding: 0 0; 
+    }
+}
