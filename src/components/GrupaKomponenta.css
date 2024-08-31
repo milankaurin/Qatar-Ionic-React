@@ -40,11 +40,11 @@
   }
 
   
-  /* Adjust button size */
+  
   .small-button {
-    font-size: 14px; /* Smaller font size for the button */
-    --background: #6200ea; /* Use Ionic CSS variables for theming */
-    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    font-size: 14px; 
+    --background: #6200ea; 
+    --background-activated: #7b1fa2; 
     --background-focused: #7b1fa2;
     --color: #ffffff;
      
@@ -52,8 +52,8 @@
   
   .small-button1 {
     
-    --background: #6200ea; /* Use Ionic CSS variables for theming */
-    --background-activated: #7b1fa2; /* Darker purple on activation/hover */
+    --background: #6200ea; 
+    --background-activated: #7b1fa2; 
     --background-focused: #7b1fa2;
     --color: #ffffff;
      
@@ -63,50 +63,62 @@
     .scrollable-container {
       display: flex;
       overflow-x: hidden;
-      width: 100%; /* Disable horizontal scrolling on larger screens */
+      width: 100%; 
     }
   
     .scrollable-inner {
       width: 100%;
-      width: max-content; /* Full width on larger screens */
+      width: max-content; 
     }
   
  
     .page-content {
-      padding: 16px; /* Dodaje padding oko sadržaja */
+      padding: 16px; 
     }
     
     .select-input {
-      --padding-start: 8px; /* Dodaje unutrašnji padding za select komponente */
+      --padding-start: 8px; 
       --padding-end: 8px;
-      margin-bottom: 16px; /* Razmak između select komponenata */
+      margin-bottom: 16px; 
     }
     
     .radio-group {
-      margin-bottom: 16px; /* Razmak nakon radio grupa */
+      margin-bottom: 16px; 
     }
     
     .match-button {
-      font-size: 1.2em; /* Veća veličina teksta za dugme */
-      height: 50px; /* Veća visina dugmeta */
+      font-size: 1.2em; 
+      height: 50px; 
     }
 
 
 
     .match-button {
       font-size: 1.2em;
-      height: 50px; /* Veća visina dugmeta */
-      width: 100%; /* Postavlja dugme da zauzima celu širinu kolone */
+      height: 50px; 
+      width: 100%;
     }
     
     .date-picker {
       display: flex;
       justify-content: center;
       align-items: center;
-       /* Centrira kalendar */
-      margin-left: 30px; /* Dodaje horizontalni padding */
+       
+      margin-left: 30px; 
     }
 
 
+ 
 
+
+  }
+
+  .smaller-button {
+    height: 30px; 
+    font-size: 12px; 
+    --padding-top: 2px;
+    --padding-bottom: 2px; 
+    --padding-start: 5px; 
+    --padding-end: 5px; 
+    line-height: 30px; 
   }

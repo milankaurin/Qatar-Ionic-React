@@ -337,8 +337,8 @@ const [showAlert, setShowAlert] = useState(false);
               <IonCol size="1"><strong>Tim 2</strong></IonCol>
               <IonCol size="2.2"><strong>Vreme Početka</strong></IonCol>
               <IonCol size="1.5"><strong>Rezultat</strong></IonCol>
-              <IonCol size="1.7"><strong>Stadion</strong></IonCol>
-              <IonCol size="2"><strong>Akcije</strong></IonCol>
+              <IonCol size="2"><strong>Stadion</strong></IonCol>
+              <IonCol size="3.5"><strong>Akcije</strong></IonCol>
             </IonRow>
             {matches.map(match => (
               <IonRow key={match.id}>
@@ -354,15 +354,15 @@ const [showAlert, setShowAlert] = useState(false);
                     `${match.tim1Golovi} - ${match.tim2Golovi}`
                   )}
                 </IonCol>
-                <IonCol size="1.7">{match.stadiumName}</IonCol>
-                <IonCol size="2">
+                <IonCol size="2">{match.stadiumName}</IonCol>
+                <IonCol size="3.5">
                   {match.tim1Golovi === null && !match.predato && (
-                    <IonButton color="danger" onClick={() => handleDeleteMatch(match.id)}>
+                    <IonButton className="smaller-button" color="danger" onClick={() => handleDeleteMatch(match.id)}>
                       Obriši Utakmicu
                     </IonButton>
                   )}
                   {match.tim1Golovi === null && !match.predato && (
-                    <IonButton color="primary" onClick={() => handleSetResult(match.id)}>
+                    <IonButton className="smaller-button" color="primary" onClick={() => handleSetResult(match.id)}>
                       Unesi rezultat
                     </IonButton>
                   )}
